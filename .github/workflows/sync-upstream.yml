@@ -1,0 +1,78 @@
+name: Sync craftzdog upstream
+
+on:
+  schedule:
+    # 每周一 UTC 00:00 (北京时间周一 08:00)
+    - cron: '0 0 * * 1'
+  workflow_dispatch: # 支持手动触发
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout this repo
+        uses: actions/checkout@v4
+
+      - name: Clone craftzdog/dotfiles-public
+        run: |
+          git clone --depth 1 https://github.com/craftzdog/dotfiles-public.git /tmp/upstream
+
+      - name: Sync upstream nvim config
+        run: |
+          # 保存自定义文件列表（这些文件有我们的修改，需要人工审核）
+          CUSTOM_FILES=(
+            "nvim/lua/config/keymaps.lua"
+            "nvim/lua/config/options.lua"
+            "nvim/lua/plugins/editor.lua"
+            "nvim/lua/plugins/ui.lua"
+          )
+
+          # 同步上游所有 nvim 文件
+          if [ -d "/tmp/upstream/.config/nvim" ]; then
+            # 先同步非自定义文件（直接覆盖）
+            rsync -av --exclude='.git' \
+              /tmp/upstream/.config/nvim/ nvim/ \
+              --exclude='lazy-lock.json'
+
+            echo "--- Upstream sync complete ---"
+            echo "Custom files that may have conflicts:"
+            for f in "${CUSTOM_FILES[@]}"; do
+              echo "  - $f"
+            done
+          else
+            echo "Upstream nvim config not found!"
+            exit 1
+          fi
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if git diff --quiet && git diff --cached --quiet; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Pull Request
+        if: steps.changes.outputs.has_changes == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "sync: update from craftzdog/dotfiles-public"
+          title: "Upstream Sync: craftzdog 配置更新"
+          body: |
+            craftzdog/dotfiles-public 有新的更新。
+
+            **请注意检查以下自定义文件是否有冲突：**
+            - `nvim/lua/config/keymaps.lua` — Alt+方向键调整窗口、Space+tv/th 分屏终端
+            - `nvim/lua/config/options.lua` — shell = fish
+            - `nvim/lua/plugins/editor.lua` — close-buffers 改为 Space+bh/bu
+            - `nvim/lua/plugins/ui.lua` — 移除了 snacks.nvim 的 keys = {}
+
+            合并后运行 `git pull` 即可同步到本地。
+          branch: upstream-sync
+          delete-branch: true
