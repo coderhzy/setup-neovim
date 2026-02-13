@@ -52,11 +52,11 @@ keymap.set("n", "sk", "<C-w>k")
 keymap.set("n", "sj", "<C-w>j")
 keymap.set("n", "sl", "<C-w>l")
 
--- Resize window (Alt+arrow keys)
-keymap.set("n", "<M-Left>", "2<C-w><", opts)
-keymap.set("n", "<M-Right>", "2<C-w>>", opts)
-keymap.set("n", "<M-Up>", "2<C-w>+", opts)
-keymap.set("n", "<M-Down>", "2<C-w>-", opts)
+-- Resize window (Alt+hjkl)
+keymap.set("n", "<M-h>", "2<C-w><", opts)
+keymap.set("n", "<M-l>", "2<C-w>>", opts)
+keymap.set("n", "<M-k>", "2<C-w>+", opts)
+keymap.set("n", "<M-j>", "2<C-w>-", opts)
 
 -- Diagnostics
 keymap.set("n", "<C-j>", function()
@@ -78,3 +78,11 @@ end, {})
 -- Split terminal
 keymap.set("n", "<Leader>tv", ":vsplit | terminal<Return>", opts)
 keymap.set("n", "<Leader>th", ":split | terminal<Return>", opts)
+
+-- Fix Ctrl+C in terminal mode (send interrupt signal directly)
+keymap.set("t", "<C-c>", function()
+	local job_id = vim.b.terminal_job_id
+	if job_id then
+		vim.fn.chansend(job_id, "\x03")
+	end
+end, { noremap = true, silent = true })
