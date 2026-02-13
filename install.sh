@@ -24,7 +24,8 @@ fi
 # =========================================
 # 2. CLI Tools
 # =========================================
-echo "[2/8] Installing CLI tools..."
+echo "[2/9] Installing CLI tools..."
+brew install --cask alacritty || true
 brew install \
     neovim \
     tmux \
@@ -43,7 +44,15 @@ brew install \
 # =========================================
 # 3. Neovim Config
 # =========================================
-echo "[3/8] Setting up Neovim config..."
+echo "[3/9] Setting up Alacritty config..."
+mkdir -p "$HOME/.config/alacritty"
+if [ -f "$HOME/.config/alacritty/alacritty.toml" ]; then
+    echo "  Backing up existing alacritty config"
+    cp "$HOME/.config/alacritty/alacritty.toml" "$HOME/.config/alacritty/alacritty.toml.bak.$(date +%s)"
+fi
+cp "$DOTFILES_DIR/alacritty/alacritty.toml" "$HOME/.config/alacritty/alacritty.toml"
+
+echo "[4/9] Setting up Neovim config..."
 if [ -d "$HOME/.config/nvim" ]; then
     echo "  Backing up existing nvim config to ~/.config/nvim.bak"
     mv "$HOME/.config/nvim" "$HOME/.config/nvim.bak.$(date +%s)"
@@ -54,7 +63,7 @@ cp -r "$DOTFILES_DIR/nvim" "$HOME/.config/nvim"
 # =========================================
 # 4. Tmux Config
 # =========================================
-echo "[4/8] Setting up Tmux config..."
+echo "[5/9] Setting up Tmux config..."
 if [ -f "$HOME/.tmux.conf" ]; then
     echo "  Backing up existing tmux config"
     cp "$HOME/.tmux.conf" "$HOME/.tmux.conf.bak.$(date +%s)"
@@ -70,7 +79,7 @@ fi
 # =========================================
 # 5. Fish Shell Config
 # =========================================
-echo "[5/8] Setting up Fish shell..."
+echo "[6/9] Setting up Fish shell..."
 mkdir -p "$HOME/.config/fish"
 if [ -f "$HOME/.config/fish/config.fish" ]; then
     echo "  Backing up existing fish config"
@@ -87,7 +96,7 @@ fi
 # =========================================
 # 6. Node.js (via fnm)
 # =========================================
-echo "[6/8] Setting up Node.js via fnm..."
+echo "[7/9] Setting up Node.js via fnm..."
 if command -v fnm &>/dev/null; then
     eval "$(fnm env)"
     fnm install --lts
@@ -97,13 +106,13 @@ fi
 # =========================================
 # 7. Neovim Plugins
 # =========================================
-echo "[7/8] Installing Neovim plugins (this may take a moment)..."
+echo "[8/9] Installing Neovim plugins (this may take a moment)..."
 nvim --headless "+Lazy! sync" +qa 2>/dev/null || true
 
 # =========================================
 # 8. Tmux Plugins
 # =========================================
-echo "[8/8] Installing Tmux plugins..."
+echo "[9/9] Installing Tmux plugins..."
 "$HOME/.tmux/plugins/tpm/bin/install_plugins" 2>/dev/null || true
 
 # =========================================

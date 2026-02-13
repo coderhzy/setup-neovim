@@ -1,0 +1,117 @@
+# Alacritty Configuration File
+
+[env]
+TERM = "xterm-256color"
+
+[window]
+padding.x = 10
+padding.y = 10
+decorations = "Buttonless"
+opacity = 0.7
+blur = true
+option_as_alt = "Both"
+# 全屏时使用原生全屏（可能有助于透明度问题）
+startup_mode = "Windowed"
+
+[font]
+size = 14
+
+[font.normal]
+family = "MesloLGS Nerd Font Mono"
+style = "Regular"
+
+[font.bold]
+family = "MesloLGS Nerd Font Mono"
+style = "Bold"
+
+[font.italic]
+family = "MesloLGS Nerd Font Mono"
+style = "Italic"
+
+[font.bold_italic]
+family = "MesloLGS Nerd Font Mono"
+style = "Bold Italic"
+
+# Coolnight 主题
+[colors.primary]
+background = '#011423'
+foreground = '#CBE0F0'
+
+[colors.cursor]
+text = "#011423"
+cursor = "#47FF9C"
+
+[colors.normal]
+black = "#214969"
+red = "#E52E2E"
+green = "#44FFB1"
+yellow = "#FFE073"
+blue = "#0FC5ED"
+magenta = "#a277ff"
+cyan = "#24EAF7"
+white = "#24EAF7"
+
+[colors.bright]
+black = "#214969"
+red = "#E52E2E"
+green = "#44FFB1"
+yellow = "#FFE073"
+blue = "#A277FF"
+magenta = "#a277ff"
+cyan = "#24EAF7"
+white = "#24EAF7"
+
+# 键盘快捷键配置
+[[keyboard.bindings]]
+# 禁用 Cmd+W（防止误关闭窗口）
+key = "W"
+mods = "Command"
+action = "None"
+
+[[keyboard.bindings]]
+# 使用 Cmd+Shift+W 关闭窗口（需要按两个键，更安全）
+key = "W"
+mods = "Command|Shift"
+action = "Quit"
+
+[[keyboard.bindings]]
+# 全屏切换 - Cmd+Enter
+key = "Return"
+mods = "Command"
+action = "ToggleFullscreen"
+
+[[keyboard.bindings]]
+# 全屏切换 - Ctrl+Cmd+F（macOS 系统快捷键）
+key = "F"
+mods = "Command|Control"
+action = "ToggleFullscreen"
+
+[[keyboard.bindings]]
+# 新建窗口 - Cmd+N
+key = "N"
+mods = "Command"
+action = "CreateNewWindow"
+
+[[keyboard.bindings]]
+# 清屏 - Cmd+K
+key = "K"
+mods = "Command"
+action = "ClearHistory"
+
+[[keyboard.bindings]]
+# 增大字体 - Cmd+Plus
+key = "Plus"
+mods = "Command"
+action = "IncreaseFontSize"
+
+[[keyboard.bindings]]
+# 减小字体 - Cmd+Minus
+key = "Minus"
+mods = "Command"
+action = "DecreaseFontSize"
+
+[[keyboard.bindings]]
+# 重置字体 - Cmd+0
+key = "Key0"
+mods = "Command"
+action = "ResetFontSize"
