@@ -65,6 +65,7 @@ return {
 		opts = {
 			scroll = { enabled = false },
 		},
+		keys = {},
 	},
 
 	-- buffer line
