@@ -75,9 +75,15 @@ vim.api.nvim_create_user_command("ToggleAutoformat", function()
 	require("craftzdog.lsp").toggleAutoformat()
 end, {})
 
--- Split terminal
-keymap.set("n", "<Leader>tv", ":vsplit | terminal<Return>", opts)
-keymap.set("n", "<Leader>th", ":split | terminal<Return>", opts)
+-- Split terminal (bufhidden=hide keeps terminal alive when window closes)
+-- jk exits terminal mode (buffer-local, won't affect LazyGit)
+local function open_terminal(cmd)
+	vim.cmd(cmd)
+	vim.bo.bufhidden = "hide"
+	vim.keymap.set("t", "jk", "<C-\\><C-n>", { buffer = 0, noremap = true, silent = true })
+end
+keymap.set("n", "<Leader>tv", function() open_terminal("vsplit | terminal") end, opts)
+keymap.set("n", "<Leader>th", function() open_terminal("split | terminal") end, opts)
 
 -- Fix Ctrl+C in terminal mode (send interrupt signal directly)
 keymap.set("t", "<C-c>", function()
